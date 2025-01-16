@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generar Reporte</title>
     <style>
-        /* Estilos proporcionados previamente */
         body {
             background-color: #f4f4f9;
             color: #333;
@@ -21,7 +20,7 @@
             padding: 20px;
             border-radius: 10px;
             width: 100%;
-            max-width: 600px;
+            max-width: 600px; /* Aumenté el tamaño máximo del contenedor */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: left;
             margin: 10px;
@@ -41,7 +40,7 @@
             text-align: center;
         }
         input[type="text"], input[type="file"] {
-            width: 100%;
+            width: 100%; /* Los inputs se ajustan al 100% */
             padding: 8px;
             margin-bottom: 12px;
             border: 1px solid #ddd;
@@ -55,7 +54,7 @@
             background-color: #fff;
         }
         button {
-            width: 60%;
+            width: 60%; /* Botón más pequeño */
             padding: 10px;
             background-color: #4CAF50;
             color: white;
@@ -65,24 +64,60 @@
             cursor: pointer;
             display: block;
             margin-left: auto;
-            margin-right: auto;
+            margin-right: auto; /* Centrado del botón */
         }
         button:hover {
             background-color: #45a049;
         }
+
+        /* Estilos específicos para los campos de Nombre y Título de la noticia */
+        .centered-input {
+            width: 80%; /* Acorté el tamaño de los inputs */
+            margin-left: auto;
+            margin-right: auto; /* Centrado del input */
+        }
+        .centered-label {
+            text-align: center; /* Centrado del label */
+        }
+
+        /* Grid para dos columnas con mayor espacio entre ellas */
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+            gap: 30px; /* Añadí un espacio de 30px entre las columnas */
         }
+
+        /* Medias Queries para Responsividad */
         @media (max-width: 768px) {
             .form-container {
+                padding: 15px;
                 width: 90%;
-                max-width: 330px;
+                max-width: 330px; /* Reducción en pantallas medianas */
+            }
+            label {
+                font-size: 11px;
+            }
+            input[type="text"], input[type="file"], button {
+                font-size: 12px;
+                padding: 7px;
             }
             .form-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
+                grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+                gap: 15px; /* Espacio entre los elementos en una sola columna */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                width: 95%;
+                max-width: 300px; /* Reducción en pantallas pequeñas */
+            }
+            label {
+                font-size: 10px;
+            }
+            input[type="text"], input[type="file"], button {
+                font-size: 11px;
+                padding: 6px;
             }
         }
     </style>
@@ -91,35 +126,45 @@
     <div class="form-container">
         <img src="logosolopajaronblanco.png" alt="Logo">
         <form id="reportForm">
-            <!-- Nombre y Título -->
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" placeholder="Tu nombre">
-            <label for="newsTitle">Título de la noticia:</label>
-            <input type="text" id="newsTitle" placeholder="Título">
+            <!-- Centrado de los label e input solo para Nombre y Título -->
+            <label class="centered-label" for="name">Nombre:</label>
+            <input class="centered-input" type="text" id="name" placeholder="Tu nombre">
+
+            <label class="centered-label" for="newsTitle">Título de la noticia:</label>
+            <input class="centered-input" type="text" id="newsTitle" placeholder="Título">
 
             <!-- Contenido en dos columnas -->
             <div class="form-grid">
                 <div>
                     <label for="contraNews">Link Noticia Contraplano:</label>
                     <input type="text" id="contraNews" placeholder="Noticia">
+
                     <label for="youtube">Youtube:</label>
                     <input type="text" id="youtube" placeholder="https://youtube.com/">
+
                     <label for="linkedin">LinkedIn:</label>
                     <input type="text" id="linkedin" placeholder="https://linkedin.com/">
+
                     <label for="facebook">Facebook:</label>
                     <input type="text" id="facebook" placeholder="https://facebook.com/">
+
                     <label for="instagram">Instagram:</label>
                     <input type="text" id="instagram" placeholder="https://instagram.com/">
                 </div>
+
                 <div>
                     <label for="tiktok1">Tiktok:</label>
                     <input type="text" id="tiktok1" placeholder="https://tiktok.com/">
+
                     <label for="tiktok2">Tiktok 2:</label>
                     <input type="text" id="tiktok2" placeholder="https://tiktok.com/">
+
                     <label for="twitter">Link Twitter:</label>
                     <input type="text" id="twitter" placeholder="https://x.com/">
+
                     <label for="instagramStory">Subir Historia de Instagram:</label>
                     <input type="file" id="instagramStory" accept="image/*">
+
                     <label for="seoCapture">Subir Captura de SEO:</label>
                     <input type="file" id="seoCapture" accept="image/*">
                 </div>
@@ -127,11 +172,45 @@
 
             <button type="button" onclick="generateReport()">Generar reporte</button>
         </form>
-        <pre id="reporte"></pre>
+        <div class="footer">
+            <p></p>
+        </div>
     </div>
 
     <script>
-        // Función para subir a Cloudinary
+         async function shortenUrl(inputId) {
+            const apiKey = "AVFDmGhWhf2woGmBL4Nv83ll4BlDShzsfIs9gA4IFo9SaP0Zboi6knfOSZFW";  // Reemplaza con tu clave API
+            const longUrl = document.getElementById(inputId).value;
+
+            if (longUrl) {
+                const url = "https://api.tinyurl.com/create";
+                const headers = {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
+                };
+                const payload = {
+                    "url": longUrl
+                };
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        document.getElementById(inputId).value = data.data.tiny_url;  // Actualiza el campo con el enlace corto
+                    } else {
+                        console.error('Error al acortar la URL:', data.message || 'Sin mensaje');
+                    }
+                } catch (error) {
+                    console.error('Error al hacer la solicitud:', error);
+                }
+            }
+        }
         async function uploadToCloudinary(file, folder) {
             const cloudName = 'dkyohajjd';
             const uploadPreset = 'my_preset';
@@ -161,24 +240,31 @@
             }
         }
     
-        // Función para generar el reporte
         async function generateReport() {
             const form = document.getElementById('reportForm');
             const inputs = form.querySelectorAll('input[type="text"]');
             const fileInputs = form.querySelectorAll('input[type="file"]');
             let report = '';
-    
-            // Recoger datos de los campos de texto
-            inputs.forEach(input => {
+
+            for (const input of inputs) {
                 const label = form.querySelector(`label[for="${input.id}"]`).innerText;
-                report += `${label}: ${input.value}\n`;
-            });
-    
-            // Subir archivos e incluir enlaces de Cloudinary
+                let inputValue = input.value;
+                
+                // Acortar la URL si es uno de los campos de URL
+                if (input.id === 'contraNews' || input.id === 'youtube' || input.id === 'linkedin' ||
+                    input.id === 'facebook' || input.id === 'instagram' || input.id === 'tiktok1' ||
+                    input.id === 'tiktok2' || input.id === 'twitter') {
+                    await shortenUrl(input.id); // Llamada para acortar la URL
+                    inputValue = input.value;  // El valor se actualiza después de la acortación
+                }
+
+                report += `${label}: ${inputValue}\n`;
+            }
+
             for (const fileInput of fileInputs) {
                 const label = form.querySelector(`label[for="${fileInput.id}"]`).innerText;
                 const file = fileInput.files[0];
-    
+
                 if (file) {
                     let folder = '';
                     if (fileInput.id === 'instagramStory') {
@@ -192,16 +278,13 @@
                     report += `${label}: No se subió ningún archivo\n`;
                 }
             }
-    
-            // Mostrar el reporte generado
-            document.getElementById('reporte').textContent = report;
-    
-            // Copiar el reporte al portapapeles
+
             navigator.clipboard.writeText(report).then(() => {
                 alert('El reporte ha sido copiado al portapapeles. Pega el reporte en WhatsApp y las imágenes deberían aparecer como previsualización.');
             }).catch(err => {
                 console.error('Error al copiar al portapapeles:', err);
             });
+
         }
     </script>
 </body>
