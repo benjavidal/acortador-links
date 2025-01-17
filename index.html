@@ -72,15 +72,27 @@
 
         /* Estilos específicos para los campos de Nombre y Título de la noticia */
         .centered-input {
-            width: 60%; /* Reduce el ancho del input */
-            margin: 0 auto 12px; /* Centra el input y agrega margen inferior */
-            display: block;
+            display: block; /* Asegura que el input esté en una nueva línea */
+            margin: 10px auto 20px auto; /* Agrega separación arriba y abajo, y centra */
+            max-width: 300px; /* Ajusta el ancho máximo del input */
+            width: 100%; /* Asegura que el input ocupe el 100% del espacio disponible dentro del max-width */
+            padding: 8px; /* Espaciado interno para los inputs */
+            border: 1px solid #ccc; /* Opcional: Borde de los inputs */
+            border-radius: 4px; /* Opcional: Bordes redondeados */
             text-align: center;
         }
         .centered-label {
-            text-align: center; /* Centrado del label */
-            margin-bottom: 5px;
-            font-size: 12px;
+            display: block; /* Asegura que cada label esté en una nueva línea */
+            margin: 0 auto; /* Centra horizontalmente */
+            max-width: 300px; /* Ajusta el ancho máximo del label */
+            text-align: center; /* Centra el texto del label */
+        }
+
+        /* Asegura que el formulario esté centrado */
+        #reportForm {
+        display: flex;
+        flex-direction: column; /* Alinea los elementos en columna */
+        align-items: center; /* Centra horizontalmente */
         }
 
         /* Grid para dos columnas con mayor espacio entre ellas */
