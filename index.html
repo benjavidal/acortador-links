@@ -72,12 +72,15 @@
 
         /* Estilos específicos para los campos de Nombre y Título de la noticia */
         .centered-input {
-            width: 80%; /* Acorté el tamaño de los inputs */
-            margin-left: auto;
-            margin-right: auto; /* Centrado del input */
+            width: 60%; /* Reduce el ancho del input */
+            margin: 0 auto 12px; /* Centra el input y agrega margen inferior */
+            display: block;
+            text-align: center;
         }
         .centered-label {
             text-align: center; /* Centrado del label */
+            margin-bottom: 5px;
+            font-size: 12px;
         }
 
         /* Grid para dos columnas con mayor espacio entre ellas */
@@ -85,6 +88,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
             gap: 30px; /* Añadí un espacio de 30px entre las columnas */
+            padding: 20px 0 0 0;
         }
 
         /* Medias Queries para Responsividad */
@@ -132,6 +136,7 @@
 
             <label class="centered-label" for="newsTitle">Título de la noticia:</label>
             <input class="centered-input" type="text" id="newsTitle" placeholder="Título">
+
 
             <!-- Contenido en dos columnas -->
             <div class="form-grid">
@@ -241,51 +246,59 @@
         }
     
         async function generateReport() {
-            const form = document.getElementById('reportForm');
-            const inputs = form.querySelectorAll('input[type="text"]');
-            const fileInputs = form.querySelectorAll('input[type="file"]');
-            let report = '';
+    const form = document.getElementById('reportForm');
+    const inputs = form.querySelectorAll('input[type="text"]');
+    const fileInputs = form.querySelectorAll('input[type="file"]');
+    let report = '';
 
-            for (const input of inputs) {
-                const label = form.querySelector(`label[for="${input.id}"]`).innerText;
-                let inputValue = input.value;
-                
-                // Acortar la URL si es uno de los campos de URL
-                if (input.id === 'contraNews' || input.id === 'youtube' || input.id === 'linkedin' ||
-                    input.id === 'facebook' || input.id === 'instagram' || input.id === 'tiktok1' ||
-                    input.id === 'tiktok2' || input.id === 'twitter') {
-                    await shortenUrl(input.id); // Llamada para acortar la URL
-                    inputValue = input.value;  // El valor se actualiza después de la acortación
-                }
+    // Agrega la fecha actual al inicio del reporte
+    const currentDate = new Date().toLocaleDateString(); // Fecha en formato local
+    report += `Reporte ${currentDate}\n\n`; // Espacio adicional entre la fecha y el contenido
 
-                report += `${label}: ${inputValue}\n`;
-            }
-
-            for (const fileInput of fileInputs) {
-                const label = form.querySelector(`label[for="${fileInput.id}"]`).innerText;
-                const file = fileInput.files[0];
-
-                if (file) {
-                    let folder = '';
-                    if (fileInput.id === 'instagramStory') {
-                        folder = 'historias';
-                    } else if (fileInput.id === 'seoCapture') {
-                        folder = 'SEO';
-                    }
-                    const imageUrl = await uploadToCloudinary(file, folder);
-                    report += `${label}: ${imageUrl}\n`;
-                } else {
-                    report += `${label}: No se subió ningún archivo\n`;
-                }
-            }
-
-            navigator.clipboard.writeText(report).then(() => {
-                alert('El reporte ha sido copiado al portapapeles. Pega el reporte en WhatsApp y las imágenes deberían aparecer como previsualización.');
-            }).catch(err => {
-                console.error('Error al copiar al portapapeles:', err);
-            });
-
+    // Recorre los campos de texto
+    for (const input of inputs) {
+        const label = form.querySelector(`label[for="${input.id}"]`).innerText;
+        let inputValue = input.value;
+        
+        // Acortar la URL si es uno de los campos de URL
+        if (input.id === 'contraNews' || input.id === 'youtube' || input.id === 'linkedin' ||
+            input.id === 'facebook' || input.id === 'instagram' || input.id === 'tiktok1' ||
+            input.id === 'tiktok2' || input.id === 'twitter') {
+            await shortenUrl(input.id); // Llamada para acortar la URL
+            inputValue = input.value;  // El valor se actualiza después de la acortación
         }
+
+        report += `${label}\n${inputValue}\n\n`; // Añade espacio adicional entre campos
+    }
+
+    // Recorre los campos de archivo
+    for (const fileInput of fileInputs) {
+        const label = form.querySelector(`label[for="${fileInput.id}"]`).innerText;
+        const file = fileInput.files[0];
+
+        if (file) {
+            let folder = '';
+            if (fileInput.id === 'instagramStory') {
+                folder = 'historias';
+            } else if (fileInput.id === 'seoCapture') {
+                folder = 'SEO';
+            }
+            const imageUrl = await uploadToCloudinary(file, folder);
+            report += `${label}\n${imageUrl}\n\n`; // Añade espacio adicional entre campos
+        } else {
+            report += `${label}\nNo se subió ningún archivo\n\n`; // Añade espacio adicional entre campos
+        }
+    }
+
+    // Copiar el reporte al portapapeles
+    navigator.clipboard.writeText(report).then(() => {
+        alert('El reporte ha sido copiado al portapapeles. Pega el reporte en WhatsApp y las imágenes deberían aparecer como previsualización.');
+    }).catch(err => {
+        console.error('Error al copiar al portapapeles:', err);
+    });
+}
+
+
     </script>
 </body>
 </html>
