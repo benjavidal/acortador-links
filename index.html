@@ -149,6 +149,37 @@
             <label class="centered-label" for="newsTitle">Título de la noticia:</label>
             <input class="centered-input" type="text" id="newsTitle" placeholder="Título">
 
+            <label class="centered-label" for="newsSection">Bloque:</label>
+            <select class="centered-input" id="newsSection">
+                <option value="" disabled selected>Selecciona un bloque</option>
+                <option value="internacional">INTERNACIONAL</option>
+                <option value="region_metropolitana">REGIÓN METROPOLITANA</option>
+                <option value="mascotas">MASCOTAS</option>
+                <option value="quintero">QUINTERO</option>
+                <option value="puchuncavi">PUCHUNCAVÍ</option>
+                <option value="legislativas">LEGISLATIVAS</option>
+                <option value="gaming">GAMING</option>
+                <option value="famosos">FAMOSOS</option>
+                <option value="valparaiso">VALPARAÍSO</option>
+                <option value="vina_del_mar">VIÑA DEL MAR</option>
+                <option value="renaca">REÑACA</option>
+                <option value="concon">CONCÓN</option>
+                <option value="zapallar">ZAPALLAR</option>
+                <option value="curiosidades">CURIOSIDADES</option>
+                <option value="deportes">DEPORTES</option>
+                <option value="ambiental">AMBIENTAL</option>
+                <option value="empresariales">EMPRESARIALES</option>
+                <option value="ia">IA</option>
+                <option value="nacional">NACIONAL</option>
+                <option value="inseguridad">INSEGURIDAD</option>
+                <option value="salud">SALUD</option>
+                <option value="cultural">CULTURAL</option>
+                <option value="opinion">OPINIÓN</option>
+                <option value="educacion">EDUCACIÓN</option>
+                <option value="zona_sur">ZONA SUR</option>
+                <option value="zona_norte">ZONA NORTE</option>
+            </select>
+
 
             <!-- Contenido en dos columnas -->
             <div class="form-grid">
@@ -195,7 +226,7 @@
     </div>
 
     <script>
-         async function shortenUrl(inputId) {
+        async function shortenUrl(inputId) {
             const apiKey = "AVFDmGhWhf2woGmBL4Nv83ll4BlDShzsfIs9gA4IFo9SaP0Zboi6knfOSZFW";  // Reemplaza con tu clave API
             const longUrl = document.getElementById(inputId).value;
 
@@ -258,58 +289,63 @@
         }
     
         async function generateReport() {
-    const form = document.getElementById('reportForm');
-    const inputs = form.querySelectorAll('input[type="text"]');
-    const fileInputs = form.querySelectorAll('input[type="file"]');
-    let report = '';
+        const form = document.getElementById('reportForm');
+        const inputs = form.querySelectorAll('input[type="text"]');
+        const fileInputs = form.querySelectorAll('input[type="file"]');
+        let report = '';
 
-    // Agrega la fecha actual al inicio del reporte
-    const currentDate = new Date().toLocaleDateString(); // Fecha en formato local
-    report += `Reporte ${currentDate}\n\n`; // Espacio adicional entre la fecha y el contenido
+        // Agrega la fecha actual al inicio del reporte
+        const currentDate = new Date().toLocaleDateString(); // Fecha en formato local
+        report += `Reporte ${currentDate}\n\n`; // Espacio adicional entre la fecha y el contenido
 
-    // Recorre los campos de texto
-    for (const input of inputs) {
-        const label = form.querySelector(`label[for="${input.id}"]`).innerText;
-        let inputValue = input.value;
-        
-        // Acortar la URL si es uno de los campos de URL
-        if (input.id === 'contraNews' || input.id === 'youtube' || input.id === 'linkedin' ||
-            input.id === 'facebook' || input.id === 'instagram' || input.id === 'tiktok1' ||
-            input.id === 'tiktok2' || input.id === 'twitter') {
-            await shortenUrl(input.id); // Llamada para acortar la URL
-            inputValue = input.value;  // El valor se actualiza después de la acortación
-        }
+        // Agrega el bloque seleccionado debajo del título de la noticia
+        const selectedBlock = document.getElementById('newsSection').value;
+        const blockLabel = document.querySelector(`label[for="newsSection"]`).innerText;
+        report += `${blockLabel.toUpperCase()}\n${selectedBlock.toUpperCase()}\n\n`; // Se asegura que el bloque esté en mayúsculas
 
-        report += `${label}\n${inputValue}\n\n`; // Añade espacio adicional entre campos
-    }
+        // Recorre los campos de texto
+        for (const input of inputs) {
+            const label = form.querySelector(`label[for="${input.id}"]`).innerText;
+            let inputValue = input.value;
 
-    // Recorre los campos de archivo
-    for (const fileInput of fileInputs) {
-        const label = form.querySelector(`label[for="${fileInput.id}"]`).innerText;
-        const file = fileInput.files[0];
-
-        if (file) {
-            let folder = '';
-            if (fileInput.id === 'instagramStory') {
-                folder = 'historias';
-            } else if (fileInput.id === 'seoCapture') {
-                folder = 'SEO';
+            // Acortar la URL si es uno de los campos de URL
+            if (input.id === 'contraNews' || input.id === 'youtube' || input.id === 'linkedin' ||
+                input.id === 'facebook' || input.id === 'instagram' || input.id === 'tiktok1' || 
+                input.id === 'tiktok2' || input.id === 'twitter') {
+                await shortenUrl(input.id); // Acorta la URL
+                inputValue = input.value; // Actualiza el valor del input con la URL acortada
             }
-            const imageUrl = await uploadToCloudinary(file, folder);
-            report += `${label}\n${imageUrl}\n\n`; // Añade espacio adicional entre campos
-        } else {
-            report += `${label}\nNo se subió ningún archivo\n\n`; // Añade espacio adicional entre campos
+
+            // Agrega el valor de cada campo al reporte
+            report += `${label}\n${inputValue}\n\n`;
         }
-    }
 
-    // Copiar el reporte al portapapeles
-    navigator.clipboard.writeText(report).then(() => {
-        alert('El reporte ha sido copiado al portapapeles. Pega el reporte en WhatsApp y las imágenes deberían aparecer como previsualización.');
-    }).catch(err => {
-        console.error('Error al copiar al portapapeles:', err);
-    });
-}
+            // Recorre los campos de archivo
+            for (const fileInput of fileInputs) {
+                const label = form.querySelector(`label[for="${fileInput.id}"]`).innerText;
+                const file = fileInput.files[0];
 
+                if (file) {
+                    let folder = '';
+                    if (fileInput.id === 'instagramStory') {
+                        folder = 'historias';
+                    } else if (fileInput.id === 'seoCapture') {
+                        folder = 'SEO';
+                    }
+                    const imageUrl = await uploadToCloudinary(file, folder);
+                    report += `${label}\n${imageUrl}\n\n`; // Añade espacio adicional entre campos
+                } else {
+                    report += `${label}\nNo se subió ningún archivo\n\n`; // Añade espacio adicional entre campos
+                }
+            }
+
+            // Copiar el reporte al portapapeles
+            navigator.clipboard.writeText(report).then(() => {
+                alert('El reporte ha sido copiado al portapapeles. Pega el reporte en WhatsApp y las imágenes deberían aparecer como previsualización.');
+            }).catch(err => {
+                console.error('Error al copiar al portapapeles:', err);
+            });
+        }
 
     </script>
 </body>
