@@ -70,6 +70,25 @@
         button:hover {
             background-color: #45a049;
         }
+        /* Spinner */
+        .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid rgba(0, 0, 0, 0.1); /* Fondo del spinner */
+            border-radius: 50%;
+            border-top: 4px solid #4CAF50; /* Color verde clarito */
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            display: none; /* Oculto inicialmente */
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
 
         /* Estilos específicos para los campos de Nombre y Título de la noticia */
         .centered-input {
@@ -221,10 +240,9 @@
 
             <button type="button" onclick="generateReport()">Generar reporte</button>
         </form>
-        <div class="footer">
-            <p></p>
-        </div>
     </div>
+    <!-- Spinner element -->
+    <div id="spinner" class="spinner"></div>
 
     <script>
         async function shortenUrl(inputId) {
@@ -257,7 +275,7 @@
                     }
                 } catch (error) {
                     console.error('Error al hacer la solicitud:', error);
-                }
+                } 
             }
         }
         async function uploadToCloudinary(file, folder) {
@@ -290,6 +308,9 @@
         }
     
         async function generateReport() {
+        // Muestra el spinner
+        document.getElementById('spinner').style.display = 'block';
+
         const form = document.getElementById('reportForm');
         const inputs = form.querySelectorAll('input[type="text"]');
         const fileInputs = form.querySelectorAll('input[type="file"]');
@@ -320,6 +341,10 @@
             // Agrega el valor de cada campo al reporte
             report += `${label}\n${inputValue}\n\n`;
         }
+
+        // Oculta el spinner después de haber terminado de cortar las URLs
+        document.getElementById('spinner').style.display = 'none';
+
 
             // Recorre los campos de archivo
             for (const fileInput of fileInputs) {
