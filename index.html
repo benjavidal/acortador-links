@@ -365,11 +365,20 @@
                 }
             }
 
-            // Copiar el reporte al portapapeles
+             // Copiar al portapapeles
             navigator.clipboard.writeText(report).then(() => {
                 alert('El reporte ha sido copiado al portapapeles.');
+
+                // Limpiar los campos después de mostrar la alerta
+                inputs.forEach(input => input.value = '');
+                fileInputs.forEach(fileInput => fileInput.value = '');
+
+                // Ocultar el spinner
+                document.getElementById('spinner').style.display = 'none';
             }).catch(err => {
-                console.error('Error al copiar al portapapeles:', err);
+                console.error('Error al copiar al portapapeles: ', err);
+                // Ocultar el spinner en caso de error
+                document.getElementById('spinner').style.display = 'none';
             });
         }
 
